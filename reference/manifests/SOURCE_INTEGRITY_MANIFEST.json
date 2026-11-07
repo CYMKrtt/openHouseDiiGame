@@ -1,0 +1,68 @@
+{
+  "project": "A Little World of Companies",
+  "generated_date": "2026-11-07",
+  "source_priority": "latest explicit Owner decisions > approved policies > approved prototypes > approved design > proposed architecture",
+  "git_repository_verified": false,
+  "m1_architecture_status": "PROPOSED_NOT_APPROVED",
+  "implementation_authorized": false,
+  "b01_exact_copy": "PENDING",
+  "dr09b_company_names": "PROVISIONAL Tech / Design / E-Com",
+  "approved_prototypes": {
+    "landing-join-cp01-v1.1.html": {
+      "sha256": "89ff5a2fed857edd84933fb5691e7a07a7ea821f4ef4a7a02524e8c904089e45",
+      "bytes": 26925,
+      "verification": "MATCHED 2026-11-07 prior SHA-256 manifest and source reference"
+    },
+    "waiting-lobby-v1.html": {
+      "sha256": "81e1eb4c91a618dd7da0065cddc2f329ef5c052c50fdc98a7f0ef55f5c2a96f9",
+      "bytes": 25842,
+      "verification": "MATCHED 2026-11-07 prior SHA-256 manifest and source reference"
+    },
+    "company-reveal-v1.1.html": {
+      "sha256": "b6d160537e24388c35e852a324abeba27074f9f09a2bfbc4c88f6f3294bd426b",
+      "bytes": 45490,
+      "verification": "MATCHED 2026-11-07 prior SHA-256 manifest and source reference"
+    },
+    "host-dashboard-v1-review.html": {
+      "sha256": "38fa218974a63a55df86be9349c21bde31904e8a6e744ec534384a3c4460b77b",
+      "bytes": 17721,
+      "verification": "MATCHED 2026-11-07 prior SHA-256 manifest and source reference"
+    }
+  },
+  "known_missing": [
+    "Target Git repository and HEAD commit not accessible",
+    "Original standalone Design Baseline V1 document not found",
+    "Original standalone Visual Design System V1 document not found",
+    "Full original Phase 3 Wireframe Baselines not found",
+    "Final B01 phrase not approved",
+    "Live environment secrets and deployment unavailable by design"
+  ],
+  "references": {
+    "API-REALTIME-original-proposal.md": "18c9603027a6fea4e86604a9a27d0ec7a4f401c863b312234ec46d1be77f0a01",
+    "B01-owner-update.md": "ee94b5309e790fd434310d1e1e6f5494e031a777b1bca9004241ad831a73a9ed",
+    "B02-B03-owner-decision-record.md": "3486169c5b2283a6e1fa961a5e4659f41b872556faff7be5c3793cdf8102d4d0",
+    "CP-01-sitemap-user-flow-v1.2.md": "5f6f85d79db0a01f245211ed8eb3ac6a0a00241f8fc30d6cd9c196783c493cc4",
+    "CP02-final-specification.md": "13fba570b6391a68252d6943ba4368f2bd118f34eda564616bc2cb66c21d7395",
+    "CP02-owner-decision-record.md": "708aa00a47b3057c8a1de9490c1cf1171725651f362a8bc57ce4bab5a009ceb0",
+    "DB-original-proposal.md": "d7647b020437ea9985b82e8a026f99b430c8bcfe028eaa1665650d9358087328",
+    "DR-07-approval-record.md": "c9ba8adb4b7eb35171f9f21f34227fc2bba0e4772b3551f6a5acd50086642893",
+    "DR-09A-C-owner-decision-record.md": "fde62b85def50cdbf44815c8c32bdb6caba55a032253cda7ae033e2298a10dec",
+    "HOST-highfidelity-review.md": "73505274a83512fc5e0ad118d69cef8ad4b74a4b95523c4bfd2b71e38d5c94a6",
+    "LANDING-join-review.md": "8d1b667eff3237cd4202b490e38b5e4871d7e5ac7ae889a018f52035cba23e33",
+    "LOBBY-spec.md": "fd75e13cb7c3e6ef460fea782f08c72d5861c2fdc23b24fbcb044f79e0111a73",
+    "M0-latest-reconciliation.md": "2a4de63b7f58c5f8e019859f014746be619a41a1301abc048e3dc686e8ae129e",
+    "M1-latest-proposal.md": "acb469eda5c47e8b1275e9849fb679bc4cb2d9e97cba8289f8b9e5b89a7c4a06",
+    "REVEAL-v1.1-review.md": "4faf7f763f47cead5d252c20e82de141a573c3643b2326235dac8036ea2670a0",
+    "SECURITY-TEST-original-proposal.md": "9ff799d0e26f8e85a5e0f12deb0af3f48f565dcf848ae7f025f1bc2cbd182968"
+  },
+  "assets": {
+    "company-reveal-v1.1-desktop.png": "d09ae312138b8bba21a39dedfea72ec74de3c34d9a7e26911c99097e54b3dc46",
+    "company-reveal-v1.1-mobile.png": "b73c6fa0b41338b76869de29aace853c093e8d26d6fdbcb2a0066e7b941d2eec",
+    "host-dashboard-v1-desktop.png": "a98225221f73a16938838db113e085d6f162c93b2c31549cfe64139280d83215",
+    "host-dashboard-v1-mobile.png": "703e57c738a3f07afe93deff7fa598dd9b4d77e9bb51dd4aae9e8ffae01bc349",
+    "landing-join-v1.1-desktop.png": "accc7b0ce2bd89b60bb4f6f8f8a40a8217bfdb4aa2c75f2182df70d9403e40f6",
+    "landing-join-v1.1-mobile.png": "19a833ce48761806a86e2511104db55b5ee742af50fe0c5f155afde2ea9310b8",
+    "waiting-lobby-v1-desktop.png": "6c987e2c329f7b367372447601c5a7af246470096f8cfffa212a3fb7abe3f174",
+    "waiting-lobby-v1-mobile.png": "18b9ac32f3583cc3f508312ad412ffde3a4a756cf664929f494352e7e02ebc26"
+  }
+}

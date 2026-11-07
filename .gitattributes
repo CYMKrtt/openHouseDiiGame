@@ -1,0 +1,2 @@
+# Approved prototype reference copies are byte-for-byte baselines.
+reference/prototypes/*.html -text

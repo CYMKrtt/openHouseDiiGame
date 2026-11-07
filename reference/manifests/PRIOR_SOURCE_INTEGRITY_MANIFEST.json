@@ -1,0 +1,328 @@
+{
+  "status": "hash-verified copies; source lineage and target repository unverified",
+  "verified_on": "2026-11-07",
+  "files": [
+    {
+      "path": "IMPLEMENTATION_READINESS.md",
+      "sha256": "9333830518221175b081598c76f975b0cae5d459b28341d706dc395ce1d4b3ff",
+      "bytes": 3140,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "M0_FREEZE_RECONCILIATION.md",
+      "sha256": "2a4de63b7f58c5f8e019859f014746be619a41a1301abc048e3dc686e8ae129e",
+      "bytes": 2289,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "M1_ARCHITECTURE_FINAL_PROPOSAL.md",
+      "sha256": "acb469eda5c47e8b1275e9849fb679bc4cb2d9e97cba8289f8b9e5b89a7c4a06",
+      "bytes": 3925,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "README.md",
+      "sha256": "3bbaddd16527205f319ecd0415a2feec2a64a5af7a2d7e98d44ee12c59c9fd7b",
+      "bytes": 1421,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/ACCEPTANCE_CRITERIA.md",
+      "sha256": "9ea7c546d7ea50cf88d61dcd8223df4f61de2dd03963847d4439d4e71caa0c04",
+      "bytes": 4966,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/API_CONTRACT.md",
+      "sha256": "4897024874459c583332e98a7687151aa7c04b2c0d2c9a422fbfdf9d39dd09b4",
+      "bytes": 3254,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/APPROVED_BASELINES.md",
+      "sha256": "9e0e99545526fe8a5730dfb58e299da357f71c9748d95d834eecb31914cba177",
+      "bytes": 2946,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/CODEX_INSTRUCTIONS.md",
+      "sha256": "0a7d1ba55bf371b38e7444c4464769b97c776ca2d4e66cc0d6b16ae06bd16a7a",
+      "bytes": 4562,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/CP-01-sitemap-user-flow-v1.2.md",
+      "sha256": "5f6f85d79db0a01f245211ed8eb3ac6a0a00241f8fc30d6cd9c196783c493cc4",
+      "bytes": 2490,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/CP-01-v1.1-review.md",
+      "sha256": "8d1b667eff3237cd4202b490e38b5e4871d7e5ac7ae889a018f52035cba23e33",
+      "bytes": 1047,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/CP02-01-Final-Specification.md",
+      "sha256": "13fba570b6391a68252d6943ba4368f2bd118f34eda564616bc2cb66c21d7395",
+      "bytes": 9785,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/CP02-02-Owner-Decision-Record.md",
+      "sha256": "708aa00a47b3057c8a1de9490c1cf1171725651f362a8bc57ce4bab5a009ceb0",
+      "bytes": 1695,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/CP02-03-Baseline-Compatibility.md",
+      "sha256": "3e856a4e6adf5aca900064042ffd5482c30898b3cfdc7281b13cd3f5d4177d2a",
+      "bytes": 3640,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/CP02-04-Change-Impact-Assessment.md",
+      "sha256": "7a5c218c58baf6b71ab4443d779263cdd71d8eb91479b042265a5e7bf231253a",
+      "bytes": 3543,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/CP02-05-Acceptance-Criteria.md",
+      "sha256": "7ec4577cab496796d408b21c1e8152f958fee27ed79f46f084ab6e14ac548a55",
+      "bytes": 5146,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/CP02-06-Risks-Open-Questions.md",
+      "sha256": "5797bcdc5ef95f8229facbf8ae0e0a9557a2e89276041b89c105ba1000279a47",
+      "bytes": 4095,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/CP02-07-Final-Approval-Checklist.md",
+      "sha256": "1e71542fd63a5ae7257c9233117d6571155e944e335d4cee283b8b7ed343bcc9",
+      "bytes": 2984,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/CP02-README.md",
+      "sha256": "9e840530822a70222b10f7e738eadaccb56c21d58078ee16a258c88be4b5b4f8",
+      "bytes": 1081,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/DATABASE_SCHEMA.md",
+      "sha256": "e352e46a66f322a3fca91c2236db55dde78e7aa19e1df5ed6f205ef4bf2554bf",
+      "bytes": 3121,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/DECISION_REGISTER.md",
+      "sha256": "c297be40a8c173bcc3e43a732287f5680fedfc1e9afe94de665cf99a6b81420a",
+      "bytes": 2452,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/DESIGN_SYSTEM.md",
+      "sha256": "3f066b978460401c5d4d996c58930be723164169a4f499d92dbe3cb6b253e15a",
+      "bytes": 2783,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/DR-07-APPROVAL-RECORD.md",
+      "sha256": "c9ba8adb4b7eb35171f9f21f34227fc2bba0e4772b3551f6a5acd50086642893",
+      "bytes": 644,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/DR-07-HOST-DESIGN-PROPOSAL.md",
+      "sha256": "f14b297729ffdb474148c86bfde64907d29bf3cce76b3435da58eadbcd107aeb",
+      "bytes": 4796,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/DR-07-HOST-HIGH-FIDELITY-REVIEW.md",
+      "sha256": "73505274a83512fc5e0ad118d69cef8ad4b74a4b95523c4bfd2b71e38d5c94a6",
+      "bytes": 3283,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/DR-09-CONTENT-DECISION-REVIEW.md",
+      "sha256": "dc9cad2bcbec7074a591f4362f5b3d2e092cfb699fa8f09e2f4a625fbea34e21",
+      "bytes": 2409,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/DR-09-CREATIVE-NAMES-OPTIONS.md",
+      "sha256": "944d08c2292eed682314c0b8dd8321f61a19eae17cab3a9f61d2072eca5cc60a",
+      "bytes": 1850,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/DR-09-WORKING-LABELS.md",
+      "sha256": "5f680259e5ef9f3fb346801061b4fe8398c5c901e3af2fa2afdabce82b2009af",
+      "bytes": 998,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/DR-09A-DR-09C-OWNER-DECISION-RECORD.md",
+      "sha256": "fde62b85def50cdbf44815c8c32bdb6caba55a032253cda7ae033e2298a10dec",
+      "bytes": 1833,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/GAME_RULES.md",
+      "sha256": "d30025ea017691cb9e7e927476eb00bf9df997f234be6d2813721c547faf77cb",
+      "bytes": 1831,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/IMPLEMENTATION_PLAN.md",
+      "sha256": "13c0ba1ca639e09cb15e234313b5245870b89e2c090684e89b45dc0ffa87cf97",
+      "bytes": 4918,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/M0_READINESS.md",
+      "sha256": "840a30d5d4f4421fc7208ad4ec240a4752bdba6f9d5ff7b6a7b029e349ccd93c",
+      "bytes": 1994,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/PROJECT_BRIEF.md",
+      "sha256": "ad5dcbc288a2e1ff118eb0e6310bb7f3edc5e2d9d9b5a745d1b66c72475a009f",
+      "bytes": 2709,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/README.md",
+      "sha256": "c59e221144a215e1f467a22e7b783c6b62d3a3df8f8b713a4119d5ecb2809df7",
+      "bytes": 2539,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/TECHNICAL_ARCHITECTURE.md",
+      "sha256": "5f72637cf7f90cbba02beb20c8910c57e0f98f0d4ab1123e50f62d8193ea53a7",
+      "bytes": 9490,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/USER_FLOW.md",
+      "sha256": "b9bbffbe02bc432b7c2f322457c0e8489b704ad94b9fa5f6580f782a1d055a14",
+      "bytes": 2554,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/company-reveal-v1.1-review.md",
+      "sha256": "4faf7f763f47cead5d252c20e82de141a573c3643b2326235dac8036ea2670a0",
+      "bytes": 1880,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_records/waiting-lobby-v1-specification.md",
+      "sha256": "fd75e13cb7c3e6ef460fea782f08c72d5861c2fdc23b24fbcb044f79e0111a73",
+      "bytes": 5296,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "approved_sources/company-reveal-v1.1.html",
+      "sha256": "b6d160537e24388c35e852a324abeba27074f9f09a2bfbc4c88f6f3294bd426b",
+      "bytes": 45490,
+      "matches_prior_reference": true
+    },
+    {
+      "path": "approved_sources/host-dashboard-v1-review.html",
+      "sha256": "38fa218974a63a55df86be9349c21bde31904e8a6e744ec534384a3c4460b77b",
+      "bytes": 17721,
+      "matches_prior_reference": true
+    },
+    {
+      "path": "approved_sources/landing-join-cp01-v1.1.html",
+      "sha256": "89ff5a2fed857edd84933fb5691e7a07a7ea821f4ef4a7a02524e8c904089e45",
+      "bytes": 26925,
+      "matches_prior_reference": true
+    },
+    {
+      "path": "approved_sources/waiting-lobby-v1.html",
+      "sha256": "81e1eb4c91a618dd7da0065cddc2f329ef5c052c50fdc98a7f0ef55f5c2a96f9",
+      "bytes": 25842,
+      "matches_prior_reference": true
+    },
+    {
+      "path": "architecture/API_AND_REALTIME.md",
+      "sha256": "18c9603027a6fea4e86604a9a27d0ec7a4f401c863b312234ec46d1be77f0a01",
+      "bytes": 2760,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "architecture/DB_AND_INVARIANTS.md",
+      "sha256": "d7647b020437ea9985b82e8a026f99b430c8bcfe028eaa1665650d9358087328",
+      "bytes": 2510,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "architecture/SECURITY_TEST_DEPLOYMENT.md",
+      "sha256": "9ff799d0e26f8e85a5e0f12deb0af3f48f565dcf848ae7f025f1bc2cbd182968",
+      "bytes": 3138,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "codex/CODEX_START_PROMPT.md",
+      "sha256": "9022fe9c8220a9288ba379fe30997d6d86acbe67fd98ffcee844e3d1b63ab685",
+      "bytes": 2228,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "codex/IMPLEMENTATION_MILESTONES.md",
+      "sha256": "cf147f3a4a8663b452637bbb0010fb4f21d77b620fef00da3c601894cf6e229b",
+      "bytes": 2054,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "evidence/CODEX_HANDOFF_APPROVAL_REVIEW.md",
+      "sha256": "457e934a763d7aa5f4ee299cfac2327b6f4bddd347fdf5bd817d7023549fe4e1",
+      "bytes": 2206,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "evidence/FINAL_OWNER_APPROVAL_GATE.md",
+      "sha256": "5de2815727340a125c1baca312dc04a7fb7214f43eb347646a898c73872ea176",
+      "bytes": 1140,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "evidence/M0_FINAL_FREEZE_REVIEW.md",
+      "sha256": "72c936b827b59e8a7a96ad259c1b93c115588ed3e5989a5486371704e0a9bc6f",
+      "bytes": 2726,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "evidence/M1_FINAL_ARCHITECTURE_REVIEW.md",
+      "sha256": "22cc4c109deeba941c1035b25cdbf6df6750e079c73b96e189f89cddad7d76a6",
+      "bytes": 4663,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "evidence/OWNER_DECISIONS_B02_B03.md",
+      "sha256": "3486169c5b2283a6e1fa961a5e4659f41b872556faff7be5c3793cdf8102d4d0",
+      "bytes": 1683,
+      "matches_prior_reference": null
+    },
+    {
+      "path": "evidence/SOURCE_MANIFEST.md",
+      "sha256": "52d1be0703343c058541dd8009a3a87c6017527f120dcb09b99fdf5c49fe38a4",
+      "bytes": 605,
+      "matches_prior_reference": null
+    }
+  ],
+  "missing_original_artifacts": [
+    "target production Git repository/commit mapping",
+    "standalone original Design Baseline V1 source",
+    "standalone original Phase 3 Wireframe baseline source",
+    "fully verified original Visual Design System V1 source (current reconstruction only)"
+  ],
+  "checks": {
+    "approved_source_copies": 4,
+    "match_prior_manifest": 4
+  }
+}
