@@ -72,22 +72,54 @@ try {
  stage = 'first join and Host authorization';
  browser = await chromium.launch({executablePath: process.env.CHROMIUM_EXECUTABLE ??
   'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'});
- const player = await browser.newPage({viewport: {width: 390, height: 844}, reducedMotion: 'reduce'});
- const host = await browser.newPage();
+ const viewport = {width: 320, height: 640};
+ const player = await browser.newPage({viewport, reducedMotion: 'reduce'});
+ const host = await browser.newPage({viewport});
+ const checkWidth = async page => {
+  const dimensions = await page.evaluate(() => ({page: document.documentElement.scrollWidth, viewport: innerWidth}));
+  assert.ok(dimensions.page <= dimensions.viewport, 'Page overflows at 320 CSS pixels');
+ };
  const resetPath = origin + '/api/v1/host/next-round';
  const headers = {Origin: origin};
  assert.equal((await player.request.post(resetPath, {headers, data: {}})).status(), 401);
  await player.goto(origin);
- await player.getByLabel('ก่อนเริ่มกิจกรรม บอกชื่อของคุณหน่อย!').fill('First participant');
+ await checkWidth(player);
+ const name = player.getByLabel('ก่อนเริ่มกิจกรรม บอกชื่อของคุณหน่อย!');
+ await name.fill('W'.repeat(31));
+ await name.press('Enter');
+ await expect(name).toHaveAttribute('aria-invalid', 'true');
+ await expect(name).toBeFocused();
+ await name.fill('W'.repeat(30));
+ await expect(name).toHaveAttribute('aria-invalid', 'false');
+ let allowHeartbeat;
+ const heartbeat = new Promise(resolve => { allowHeartbeat = resolve });
+ await player.route('**/api/v1/presence/heartbeat', async route => {
+  await heartbeat;
+  await route.continue();
+ });
  await player.getByRole('button', {name: /Join/}).click();
  await player.waitForURL('**/lobby');
+ try {
+  await expect(player.locator('.offline-banner')).toBeHidden();
+  await expect(player.locator('.you strong')).toHaveText('W'.repeat(30));
+  await checkWidth(player);
+ } finally { allowHeartbeat(); }
  await expect(player.locator('.current')).toHaveText('1', {timeout: 10000});
+ await expect(player.locator('.count')).toHaveAttribute('aria-atomic', 'true');
  await host.goto(origin + '/host');
- await host.getByLabel('รหัสผ่าน Host').fill(password);
- await host.getByRole('button', {name: 'เข้าสู่ Host Dashboard'}).click();
+ const passwordField = host.getByLabel('รหัสผ่าน Host');
+ await expect(passwordField).toBeFocused();
+ await host.keyboard.press('Shift+Tab');
+ await expect(host.getByRole('button', {name: 'เข้าสู่ Host Dashboard'})).toBeFocused();
+ await host.keyboard.press('Tab');
+ await expect(passwordField).toBeFocused();
+ await passwordField.fill(password);
+ await passwordField.press('Enter');
  const startButton = host.getByRole('button', {name: /เริ่มเปิดเผยบริษัท/});
  const nextButton = host.getByRole('button', {name: 'Next Round'});
  await expect(startButton).toBeEnabled();
+ await expect(host.getByRole('heading', {name: 'ภาพรวมกิจกรรม'})).toBeFocused();
+ await checkWidth(host);
  await expect(nextButton).toBeDisabled();
  const state = await (await host.request.get(origin + '/api/v1/host/session')).json();
  assert.equal((await host.request.post(resetPath, {headers, data: {
@@ -99,6 +131,9 @@ try {
  await player.waitForURL('**/reveal');
  await expect(nextButton).toBeDisabled();
  await expect(player.locator('.reveal-stage')).toBeVisible({timeout: 15000});
+ await expect(player.getByRole('status')).toContainText(/ยินดีต้อนรับเข้าสู่ (Tech|Design|E-Com)/);
+ await expect(player.getByRole('img', {name: /ภาพห้องทำงาน Pixel Art/})).toBeVisible();
+ await checkWidth(player);
  await expect(nextButton).toBeEnabled({timeout: 10000});
 
  const finished = await (await host.request.get(origin + '/api/v1/host/session')).json();
@@ -108,8 +143,12 @@ try {
  await nextButton.click();
  const dialog = host.getByRole('dialog', {name: 'เปิดรอบใหม่?'});
  await expect(dialog).toContainText('0 ที่นั่งและ 0 ผู้เล่นออนไลน์');
+ await expect(dialog.getByRole('button', {name: 'ยกเลิก'})).toBeFocused();
+ await host.keyboard.press('Shift+Tab');
+ await expect(dialog.getByRole('button', {name: 'ยืนยันเปิดรอบใหม่'})).toBeFocused();
  await host.keyboard.press('Escape');
  await expect(dialog).toHaveCount(0);
+ await expect(nextButton).toBeFocused();
  await nextButton.click();
  await dialog.getByRole('button', {name: 'ยืนยันเปิดรอบใหม่'}).click();
  await expect(host.getByRole('status')).toContainText('เปิดรอบใหม่แล้ว');
