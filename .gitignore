@@ -10,3 +10,4 @@ playwright-report/
 .next-check/
 .next-host-check/
 .next-m4/
+.vercel/

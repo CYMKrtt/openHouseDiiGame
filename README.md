@@ -48,3 +48,9 @@ Apply `202611080003_m5_next_round.sql` after the M3 and M4 migrations in the aut
 Host can confirm **Next Round** after the server's four-second Reveal window ends. One atomic rotation ends the current round, revokes its presence leases, and opens a fresh round at the same QR URL. Participants need to submit Join again. The Host session remains valid. The database keeps previous rounds, participants, and assignments.
 
 Run `node --test tests/database/m5-next-round.test.mjs` to check migration, history, stale requests, and start eligibility. Use `node tests/integration/m5-next-round-browser.mjs` for the isolated browser and API check. It uses embedded PostgreSQL and loopback only. Before staging sign-off, verify simultaneous rotation with separate PostgreSQL connections and repeat the QR and Reveal flow on mobile using the protected staging URL.
+
+## Protected Vercel Preview
+
+Use a dedicated Vercel project with Vercel Authentication and Standard Protection enabled before the first Preview. Deploy the local checkout with the Vercel CLI to Preview. Use the generated deployment URL and keep system environment variables exposed so the app can validate that exact origin. Set `APP_ORIGIN` only for a separately approved fixed origin.
+
+Set `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `HOST_PASSWORD_SCRYPT`, `NEXT_PUBLIC_SUPABASE_URL`, and `NEXT_PUBLIC_SUPABASE_ANON_KEY` for Preview only, using the approved test project and a staging Host verifier. The database connection string and disposable-test settings are for local tooling. The CLI excludes local dotenv and build files from the upload.

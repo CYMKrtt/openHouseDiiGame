@@ -12,7 +12,11 @@ function error(code:string,status:number){return response({code},status);}
 function cookieOptions(maxAge:number){return {httpOnly:true,secure:process.env.NODE_ENV==='production',sameSite:'strict' as const,path:'/',maxAge};}
 function identity(req:NextRequest,name:string){const value=req.cookies.get(name)?.value;return isToken(value)?hash(value):null;}
 
-function sameOrigin(req:NextRequest){const expected=process.env.APP_ORIGIN; return !!expected && req.headers.get('origin')===expected;}
+function sameOrigin(req:NextRequest){
+ const previewHost=process.env.VERCEL_ENV==='preview'?process.env.VERCEL_URL:undefined;
+ const expected=process.env.APP_ORIGIN||(previewHost?`https://${previewHost}`:undefined);
+ return !!expected&&req.headers.get('origin')===expected;
+}
 async function body(req:NextRequest):Promise<Record<string,unknown>> {
  const reader=req.body?.getReader();if(!reader)throw new Error('INVALID_INPUT');
  const chunks:Uint8Array[]=[];let size=0;
