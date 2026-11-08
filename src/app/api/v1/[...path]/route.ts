@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { hash, isToken, token, verifyPassword } from '@/server/auth';
+import { hash, isToken, startConfirmation, token, validStartConfirmation, verifyPassword } from '@/server/auth';
 import { rpc } from '@/server/database';
 import { normalizeDisplayName } from '@/server/validation';
 
@@ -28,6 +28,7 @@ function handle(err:unknown){
  if(message.includes('SESSION_STARTED'))return error('SESSION_STARTED',409);
  if(message.includes('PLAYER_REQUIRED'))return error('PLAYER_REQUIRED',401);
  if(message.includes('CONNECTION_CONFLICT'))return error('CONNECTION_CONFLICT',409);
+ if(message.includes('START_CONDITION_NOT_MET'))return error('START_CONDITION_NOT_MET',409);
  if(message.includes('INVALID_INPUT') || err instanceof SyntaxError)return error('INVALID_INPUT',422);
  return error('SERVICE_UNAVAILABLE',503);
 }
@@ -42,7 +43,7 @@ export async function GET(req:NextRequest,ctx:Context){
   }
   if(route==='session'){if(!await allowed(req))return error('RATE_LIMITED',429);return response(await rpc('m3_public_state'));}
   if(route==='me'){const id=identity(req,playerCookie);if(!id)return error('PLAYER_REQUIRED',401);if(!await allowed(req))return error('RATE_LIMITED',429);const data=await rpc('m3_player_state',{p_hash:id});return data?response(data):error('PLAYER_REQUIRED',401);}
-  if(route==='host/session'){if(!await hostAllowed(req))return error('HOST_AUTH_REQUIRED',401);if(!await allowed(req,hostCookie))return error('RATE_LIMITED',429);return response(await rpc('m3_host_state'));}
+  if(route==='host/session'){const h=identity(req,hostCookie);if(!h||!await hostAllowed(req))return error('HOST_AUTH_REQUIRED',401);if(!await allowed(req,hostCookie))return error('RATE_LIMITED',429);return response({...await rpc<Record<string,unknown>>('m3_host_state'),confirmationToken:startConfirmation(h)});}
   return error('NOT_FOUND',404);
  }catch(err){return handle(err)}
 }
@@ -58,6 +59,12 @@ export async function POST(req:NextRequest,ctx:Context){
    const value=token();await rpc('m3_create_host_session',{p_hash:hash(value)});const out=response({ok:true});out.cookies.set(hostCookie,value,cookieOptions(8*60*60));return out;
   }
   if(route==='host/logout'){const h=identity(req,hostCookie);if(h)await rpc('m3_revoke_host_session',{p_hash:h});const out=response({ok:true});out.cookies.set(hostCookie,'',cookieOptions(0));return out;}
+  if(route==='host/start'){
+   const h=identity(req,hostCookie);if(!h||!await hostAllowed(req))return error('HOST_AUTH_REQUIRED',401);
+   if(typeof payload.requestId!=='string'||!uuid.test(payload.requestId)||!validStartConfirmation(h,payload.confirmationToken))return error('CONFIRMATION_REQUIRED',403);
+   if(!await allowed(req,hostCookie))return error('RATE_LIMITED',429);
+   return response(await rpc('m4_start',{p_source:'host'}));
+  }
   const id=identity(req,playerCookie);if(!id)return error('PLAYER_REQUIRED',401);
   if(!await allowed(req))return error('RATE_LIMITED',429);
   if(route==='join'){const name=normalizeDisplayName(payload.displayName);if(name===null)return error('INVALID_NAME',422);return response(await rpc('m3_join',{p_hash:id,p_name:name}));}
