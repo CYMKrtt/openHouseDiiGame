@@ -9,17 +9,23 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "playwright test tests/flow.spec.ts",
-    "test:visual": "playwright test tests/visual.spec.ts"
+    "test:visual": "playwright test tests/visual.spec.ts",
+    "test:db": "node --test tests/database/*.test.mjs",
+    "test:api": "playwright test tests/api.spec.ts",
+    "test:server": "playwright test --config=playwright.server.config.ts",
+    "test:integration": "node --test tests/integration/*.test.mjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@supabase/supabase-js": "^2.119.0",
     "next": "^16.4.5",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.15",
     "@playwright/test": "^1.65.0",
     "@types/node": "^26.6.6",
     "@types/pngjs": "^6.0.5",
@@ -27,6 +33,7 @@
     "@types/react-dom": "^19.3.0",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.4.5",
+    "pg": "^8.23.1",
     "pixelmatch": "^8.0.0",
     "pngjs": "^7.0.0",
     "typescript": "^6.0.3"

@@ -6,3 +6,6 @@ out/
 *.tsbuildinfo
 test-results/
 playwright-report/
+.next-test/
+.next-check/
+.next-host-check/
