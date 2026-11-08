@@ -3,20 +3,26 @@
 import { useEffect,useState,type CSSProperties } from 'react';
 import { RevealArt0,RevealArt1,RevealArt2,RevealArt3,RevealArt4 } from '@/art/reveal';
 import { companies } from '@/lib/companies';
-import { multiplayer,type Player } from '@/services/multiplayer';
+import { multiplayer,ServiceError,watchSession,type Player } from '@/services/multiplayer';
 type Phase='preparing'|'revealing'|'revealed'|'error';
 export function ServerReveal(){
  const [phase,setPhase]=useState<Phase>('preparing'),[player,setPlayer]=useState<Player|null>(null);
  useEffect(()=>{let active=true,ready=false;let timer:ReturnType<typeof setTimeout>|undefined;
+  let stopWatching:(()=>void)|undefined;
+  const goToJoin=()=>{sessionStorage.removeItem('lw-initial-reveal');window.location.replace('/')};
   const tick=(start:number)=>{if(!active)return;const now=Date.now();if(now<start){setPhase('preparing');timer=setTimeout(()=>tick(start),Math.max(1,start-now))}else if(now<start+4000){setPhase('revealing');timer=setTimeout(()=>tick(start),Math.max(1,start+4000-now))}else{setPhase('revealed');sessionStorage.removeItem('lw-initial-reveal')}};
   async function load(){if(ready||!active)return;const before=Date.now();try{const own=await multiplayer.me();const after=Date.now();if(!active)return;
     if(own.phase!=='committed'||!own.companyId||!own.revealStartAt){window.location.assign('/lobby');return}
     ready=true;setPlayer(own);const initial=sessionStorage.getItem('lw-initial-reveal')===own.revealStartAt;
+    stopWatching=watchSession(state=>{if(state&&state.roundId!==own.roundId)goToJoin()},5000);
     const offset=Date.parse(own.serverTime)-(before+after)/2;
     tick(initial?Date.parse(own.revealStartAt)-offset:Date.now()+450);
-   }catch{if(active)setPhase('error')}}
+   }catch(error){
+    if(!active)return;
+    if(error instanceof ServiceError&&error.code==='PLAYER_REQUIRED')goToJoin();else setPhase('error');
+   }}
   void load();const retry=setInterval(()=>void load(),5000);window.addEventListener('online',load);
-  return()=>{active=false;clearInterval(retry);clearTimeout(timer);window.removeEventListener('online',load)}
+  return()=>{active=false;stopWatching?.();clearInterval(retry);clearTimeout(timer);window.removeEventListener('online',load)}
  },[]);
  useEffect(()=>{document.body.classList.remove('preparing','done','fail','celebrating');if(phase==='preparing')document.body.classList.add('preparing');if(phase==='error')document.body.classList.add('fail');let celebration:ReturnType<typeof setTimeout>|undefined;if(phase==='revealed'){document.body.classList.add('done');if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){document.body.classList.add('celebrating');celebration=setTimeout(()=>document.body.classList.remove('celebrating'),2100)}}return()=>{clearTimeout(celebration);document.body.classList.remove('preparing','done','fail','celebrating')}},[phase]);
  const company=player?.companyId,info=companies[company??'tech'];

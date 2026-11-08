@@ -1,6 +1,6 @@
-# A Little World of Companies — M4 development
+# A Little World of Companies — M5 development
 
-This repository includes the accepted M2 browser-local mock, conditionally accepted M3 multiplayer core, and M4 assignment/reveal implementation awaiting Owner review. The mock is not real multiplayer or production authentication. M3 and M4 were tested against a dedicated disposable Supabase development project on 2026-11-08. No deployment is included.
+This repository includes the accepted M2 browser-local mock, conditionally accepted M3 multiplayer core and M4 assignment/reveal, and the M5 Next Round implementation. M3 and M4 were tested against a dedicated disposable Supabase development project on 2026-11-08.
 
 ## Run
 
@@ -18,7 +18,7 @@ Do not use this development configuration for a live event or deploy it. M5 rema
 
 ## M3 development setup and validation
 
-M3/M4 server mode is separate from the M2 mock. Development defaults to mock; set `NEXT_PUBLIC_SESSION_MODE=server` to exercise the server-backed screens. Production builds default to server mode and fail closed when unconfigured. Do not use this branch for an event or deploy it.
+Server mode is separate from the M2 mock. Development defaults to mock; set `NEXT_PUBLIC_SESSION_MODE=server` to exercise the server-backed screens. Production builds default to server mode and fail closed when unconfigured. Staging requires a protected deployment and a dedicated test database. Live events require release approval.
 
 1. Create or designate a **non-production Supabase project**. Do not run these migrations against a production project. After the owner confirms the project is isolated and disposable, run `node scripts/m3-preflight.mjs` followed by `node scripts/m3-migrate.mjs` to apply the three migrations to a verified empty project. Both scripts require `M3_TEST_DISPOSABLE_DATABASE=yes` and matching app/database project references; the migration runner refuses nonempty public/Auth/Storage data. Run `node scripts/m3-verify-schema.mjs` to check RLS, privileges, constraints and the Realtime publication. The scripts never run automatically. They were run successfully on the designated disposable development project on 2026-11-08.
 2. Copy `.env.example` to `.env.local`. Set `APP_ORIGIN` to the exact local app origin (for example `http://localhost:3000`); set `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` to the development project URL and server secret key (or legacy service-role key) in this local file only. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` to its public project URL and anon/publishable key. Never put service-role keys in a `NEXT_PUBLIC_` variable or share secrets in chat.
@@ -39,4 +39,12 @@ Apply `node scripts/m4-migrate.mjs` only to a verified disposable development pr
 
 `node scripts/m4-verify-schema.mjs` checks M4 RLS, immutable assignment trigger, metadata constraint, and start RPC privileges. `npm run test:db` covers N=1–15 balance, offline seats, Auto and Host eligibility, immutable retries, and join rejection. Real local API tests on the owner-confirmed disposable fixture used `scripts/m4-integration-check.mjs` for 15-context Auto Start and `scripts/m4-host-check.mjs` for two simultaneous Host confirmations with one online player. `scripts/m4-browser-check.mjs` captured server Reveal/Host layouts at 320×640, 390×844, and 1440×900 and compared Reveal spin/result with approved HTML. These scripts are fixture-specific, can consume or reset synthetic seats, and must not run against valuable data.
 
-The first 15-context run observed 6,060 ms start skew with five-second fallback polling and a two-second reveal lead. After changing polling to two seconds and lead to five seconds, the single follow-up run observed 548 ms skew with 15 assignments (5/5/5), replay and late-join rejection. A separate one-browser replay measured a 3,998 ms Star with the original commit unchanged. The follow-up run used a local production-mode app and Edge background-timer controls, so it does not isolate which change fixed the skew or prove venue Wi-Fi timing. Realtime delivery under 15-client load remains unmeasured; polling fallback was effective in this test. Preserve the approved prototypes and wait for M4 acceptance before any M5 work.
+The first 15-context run observed 6,060 ms start skew with five-second fallback polling and a two-second reveal lead. After changing polling to two seconds and lead to five seconds, the single follow-up run observed 548 ms skew with 15 assignments (5/5/5), replay and late-join rejection. A separate one-browser replay measured a 3,998 ms Star with the original commit unchanged. The follow-up run used a local production-mode app and Edge background-timer controls, so it does not isolate which change fixed the skew or prove venue Wi-Fi timing. M4 was conditionally accepted. Venue Wi-Fi timing, Realtime delivery under 15-client load, and a direct Host versus Auto race remain staging checks.
+
+## M5 Next Round
+
+Apply `202611080003_m5_next_round.sql` after the M3 and M4 migrations in the authorized test/staging database, then use the matching M5 app build. The migration retains the original round and participants and retires the unscoped M3/M4 write RPCs, so the older app cannot write once this migration is installed. Run the M3/M4 fixture scripts only against a pre-M5 disposable database. The old destructive reset helpers refuse the M5 schema.
+
+Host can confirm **Next Round** after the server's four-second Reveal window ends. One atomic rotation ends the current round, revokes its presence leases, and opens a fresh round at the same QR URL. Participants need to submit Join again. The Host session remains valid. The database keeps previous rounds, participants, and assignments.
+
+Run `node --test tests/database/m5-next-round.test.mjs` to check migration, history, stale requests, and start eligibility. Use `node tests/integration/m5-next-round-browser.mjs` for the isolated browser and API check. It uses embedded PostgreSQL and loopback only. Before staging sign-off, verify simultaneous rotation with separate PostgreSQL connections and repeat the QR and Reveal flow on mobile using the protected staging URL.

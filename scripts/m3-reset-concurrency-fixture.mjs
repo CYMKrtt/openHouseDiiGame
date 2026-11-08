@@ -7,6 +7,8 @@ try{
  if(p.M3_TEST_DISPOSABLE_DATABASE!=='yes'||!isMatchingProject(p.SUPABASE_URL,p.NEXT_PUBLIC_SUPABASE_URL,p.M3_TEST_DATABASE_URL))throw new Error('target');
  client=new pg.Client({connectionString:p.M3_TEST_DATABASE_URL,connectionTimeoutMillis:10000});await client.connect();
  stage='fixture inspection';await client.query('begin');await client.query('select singleton from public.m3_session where singleton for update');
+ const history=await client.query("select 1 from information_schema.columns where table_schema='public' and table_name='m3_session' and column_name='round_id'");
+ if(history.rowCount!==0)throw new Error('round history must be preserved');
  const state=await client.query(`select
   (select count(*)::integer from public.m3_players) as players,
   (select count(*)::integer from public.m3_players where display_name !~ '^Concurrent ([1-9]|1[0-6])$') as other_players,

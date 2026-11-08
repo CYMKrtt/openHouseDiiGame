@@ -5,6 +5,8 @@ try{
  if(p.M3_TEST_DISPOSABLE_DATABASE!=='yes'||!isMatchingProject(p.SUPABASE_URL,p.NEXT_PUBLIC_SUPABASE_URL,p.M3_TEST_DATABASE_URL))throw new Error('target');
  sql=new pg.Client({connectionString:p.M3_TEST_DATABASE_URL,connectionTimeoutMillis:10000});await sql.connect();
  stage='fixture verification';await sql.query('begin');await sql.query('select pg_advisory_xact_lock(7120567301)');await sql.query('select singleton from public.m3_session where singleton for update');
+ const history=await sql.query("select 1 from information_schema.columns where table_schema='public' and table_name='m3_session' and column_name='round_id'");
+ if(history.rowCount!==0)throw new Error('round history must be preserved');
  const result=await sql.query(`select
   (select status from public.m3_session where singleton) as phase,
   (select start_source from public.m3_session where singleton) as source,
