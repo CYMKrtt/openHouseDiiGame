@@ -1,0 +1,206 @@
+/*
+ * Nextopia theme for the player pages (landing, quiz, reveal, lobby), after the CAMT NEXTopia
+ * Open House 2026 poster: a night city, neon orange / violet / cyan light, chrome lettering and
+ * glowing glass room-cubes. Loaded after each page's own stylesheet.
+ * One memorable element: the neon pixel skyline, whose windows switch to the company colour on reveal.
+ */
+:root{
+  --nx-night:#0C0E2B;        /* page */
+  --nx-deep:#080A22;
+  --nx-glass:#161A48;        /* cards */
+  --nx-glass-2:#1E2360;
+  --nx-line:#3A3F8F;         /* card borders */
+  --nx-text:#EEF0FF;
+  --nx-text-soft:#B4B8E6;
+  --nx-orange:#FF8A3D;       /* primary action */
+  --nx-orange-2:#FFB347;
+  --nx-violet:#A78BFF;
+  --nx-cyan:#43D9FF;
+  --nx-pink:#FF7AC8;
+  --nx-focus:#43D9FF;
+  --nx-display:var(--nx-font-display),"Bai Jamjuree","Noto Sans Thai","Leelawadee UI",Tahoma,sans-serif;
+  --nx-body:var(--nx-font-body),"IBM Plex Sans Thai Looped","Noto Sans Thai","Leelawadee UI",Tahoma,sans-serif;
+  --nx-pixel:var(--nx-font-pixel),"Silkscreen",ui-monospace,monospace;
+  /* page tokens the original sheets read */
+  --canvas:var(--nx-night);--ink:var(--nx-text);--ink-strong:var(--nx-text);--muted:var(--nx-text-soft);--border:var(--nx-line);--focus:var(--nx-focus);--coral:var(--nx-orange);--star:var(--nx-orange-2);
+}
+html{background:var(--nx-night);color-scheme:dark}
+body{background:transparent!important;color:var(--nx-text);font-family:var(--nx-body)}
+body:before{display:none!important}
+button,input,select{font-family:inherit}
+button:focus-visible,summary:focus-visible,.quiz-option:focus-visible,.join-button:focus-visible{outline:3px solid var(--nx-focus)!important;outline-offset:3px}
+::selection{background:#7B5CFF;color:#fff}
+
+/* ---- night sky + neon skyline ----
+ * .nx-sky-anchor is an in-flow block exactly as tall as the skyline. Its absolutely positioned child
+ * (no positioned ancestor, so it spans the full viewport width) reaches 1400px upward, with stepped
+ * bands counted from the skyline up: warm neon haze at the horizon, deep navy above.
+ */
+.nx-sky-anchor{--nx-skyline-h:120px;position:static;flex:none;align-self:stretch;width:100%;height:var(--nx-skyline-h);pointer-events:none}
+.nx-sky{position:absolute;left:0;right:0;height:calc(var(--nx-skyline-h) + 1400px);margin-top:-1400px;z-index:-1;overflow:hidden;
+  background:linear-gradient(0deg,#3B1D52 0 54px,#2C1A55 54px 92px,#221A57 92px 130px,#1A1750 130px 168px,#141447 168px 206px,#10113C 206px 250px,var(--nx-night) 250px)}
+.nx-stars{position:absolute;bottom:250px;left:50%;width:2px;height:2px;background:#fff;
+  box-shadow:-150px 8px #fff,-96px 70px #CFE8FF,-40px 4px #fff,62px 52px #FFE9B8,118px 2px #fff,160px 80px #CFE8FF,-180px 100px #fff,210px 110px #fff,-260px 38px #FFE9B8,300px 30px #fff,-360px 86px #CFE8FF,420px 10px #fff,-470px 60px #fff,520px 90px #FFE9B8}
+/* pixel planet, like the moon behind the poster's wordmark */
+.nx-moon{position:absolute;bottom:170px;right:max(18px,calc(50% - 520px));width:52px;height:52px;
+  background:radial-gradient(circle at 34% 32%,#8C86C9 0 18%,#5E5A9E 19% 46%,#3E3B78 47%);
+  clip-path:polygon(30% 0,70% 0,70% 8%,85% 8%,85% 15%,92% 15%,92% 30%,100% 30%,100% 70%,92% 70%,92% 85%,85% 85%,85% 92%,70% 92%,70% 100%,30% 100%,30% 92%,15% 92%,15% 85%,8% 85%,8% 70%,0 70%,0 30%,8% 30%,8% 15%,15% 15%,15% 8%,30% 8%);opacity:.9}
+.nx-sky-quiz .nx-moon,.nx-sky-reveal .nx-moon,.nx-sky-lobby .nx-moon{display:none}
+.nx-skyline{position:absolute;left:0;bottom:0;width:100%;height:var(--nx-skyline-h);display:block}
+.nx-far rect{fill:#2B2A72}
+.nx-near rect{fill:#10133D}
+.nx-island rect{fill:#23266A}
+.nx-island .nx-leaf{fill:#45E0B4}
+.nx-edge-a{fill:var(--nx-orange)}
+.nx-edge-b{fill:var(--nx-cyan)}
+.nx-ground{fill:var(--nx-orange)}
+.nx-win{transition:fill .5s ease}
+.nx-win-a{fill:#43D9FF}
+.nx-win-b{fill:#FFB347}
+.nx-beacon{fill:var(--nx-pink)!important;animation:nx-blink 1.6s steps(1,end) infinite}
+@keyframes nx-blink{50%{opacity:.25}}
+/* The single orchestrated moment: when a company is revealed, the city lights up in its colour. */
+body.done .nx-win{fill:var(--company-neon,var(--company))}
+.nx-sky-landing{margin:10px 0 0}
+.nx-sky-quiz{margin:18px 0 0}
+.nx-sky-reveal,.nx-sky-lobby{margin:14px 0 0}
+
+/* ---- masthead ---- */
+.site .masthead,.shell .masthead{display:flex!important;min-height:44px}
+.brand{gap:10px}
+.brand-logo,.mark{background:linear-gradient(180deg,#FFFFFF,#C9CFE8)!important;border:2px solid #FFFFFF!important;box-shadow:0 0 0 2px #7B5CFF,0 0 14px #7B5CFF99!important;border-radius:10px!important}
+.nx-wordmark{display:flex;flex-direction:column;line-height:1.05}
+/* chrome lettering, after the poster's metallic NEXTopia */
+.nx-wordmark-name{font-family:var(--nx-display);font-weight:700;font-size:20px;letter-spacing:.06em;
+  background:linear-gradient(180deg,#FFFFFF 0 38%,#9AA1C8 50%,#E7EAFA 62%,#FFFFFF);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 6px #8E7CFF88)}
+.nx-wordmark-name:after{content:"✦";margin-left:2px;font-size:.7em;vertical-align:top;color:#fff;-webkit-text-fill-color:#fff}
+.nx-wordmark-sub{font-family:var(--nx-body);font-size:11px;font-weight:600;color:var(--nx-text-soft);letter-spacing:0}
+.episode,.edition{font-family:var(--nx-body);font-size:12px!important;font-weight:700;letter-spacing:0;color:var(--nx-text)!important;background:#FFFFFF10!important;border:1.5px solid var(--nx-violet)!important;border-radius:10px!important;padding:5px 10px!important;box-shadow:0 0 10px #7B5CFF55}
+
+/* ---- shared type ---- */
+.headline,.quiz-question,.reveal-title,.insight-title,.activity-title,.error-stage h1{font-family:var(--nx-display);letter-spacing:-.01em}
+.headline{color:#FFFFFF;font-weight:700;text-shadow:0 0 18px #7B5CFF88}
+.headline .highlight{white-space:nowrap}
+.headline .highlight:after{display:none}
+.subtitle{color:var(--nx-text-soft)!important}
+.eyebrow{font-family:var(--nx-body);text-transform:none;letter-spacing:0!important;font-size:13px!important;font-weight:700;color:var(--nx-text)!important;background:#FFFFFF10!important;border:1.5px solid var(--nx-cyan)!important;border-radius:999px;padding:4px 12px!important;box-shadow:0 0 10px #43D9FF44}
+.eyebrow .dot{background:var(--nx-orange)!important;width:8px!important;height:8px!important;border-radius:0;transform:none;box-shadow:0 0 8px var(--nx-orange)}
+.eyebrow .spark{color:var(--nx-cyan)}
+.footer{font-family:var(--nx-body);color:var(--nx-text-soft)}
+.footer b{color:var(--nx-text)}
+
+/* ---- landing ---- */
+.site .main{padding-top:30px}
+.site .headline{margin-top:12px}
+.site .subtitle{margin-top:18px}
+.scene-wrap{margin-top:8px!important}
+.scene-wrap:before{background:#5B3DD8!important;opacity:.35;filter:blur(40px)!important}
+.nx-cubes{filter:drop-shadow(0 0 18px #7B5CFF55)!important}
+.nx-float{animation:nx-float 3.2s steps(4,end) infinite alternate}
+@keyframes nx-float{to{transform:translateY(-4px)}}
+.join-inline{background:linear-gradient(180deg,var(--nx-glass-2),var(--nx-glass));border:1.5px solid var(--nx-line);border-radius:18px;padding:14px 14px 12px;box-shadow:0 0 0 1px #FFFFFF0d inset,0 14px 34px #00000066}
+.join-label{font-size:15px!important;font-weight:700;color:var(--nx-text)}
+.name-input{border:1.5px solid #5B5FB5!important;box-shadow:none!important;background:var(--nx-deep)!important;color:var(--nx-text)!important;font-family:var(--nx-body)!important;font-size:16px!important;height:52px!important}
+.name-input::placeholder{color:#8F93C9!important}
+.name-input:focus{outline:3px solid var(--nx-cyan)!important;outline-offset:1px!important}
+.name-input[aria-invalid=true]{border-color:#FF6B8B!important}
+.join-button{background:linear-gradient(180deg,var(--nx-orange-2),var(--nx-orange))!important;color:#1A0E05!important;border:0!important;box-shadow:0 0 0 2px #FFD6B0 inset,0 0 18px #FF8A3D88!important;font-family:var(--nx-display);font-size:16px!important;height:52px!important}
+.join-button:hover:not(:disabled){filter:brightness(1.08)}
+.form-feedback{font-size:13px!important;color:var(--nx-text-soft)!important}
+.form-feedback.error{color:#FF8FA8!important}
+.join-meta{font-family:var(--nx-pixel);font-size:11px!important;letter-spacing:.06em;color:var(--nx-text-soft)!important}
+.join-meta .star{color:var(--nx-orange)!important}
+
+/* ---- quiz ---- */
+.quiz-site .quiz-main{padding-top:22px}
+.nx-sky-quiz + .quiz-number{margin-top:24px!important}
+.quiz-count{font-family:var(--nx-pixel);font-weight:700;color:var(--nx-text)!important;background:#FFFFFF10!important;border:1.5px solid var(--nx-cyan)!important;box-shadow:0 0 10px #43D9FF44!important}
+.quiz-progress{margin:16px 0 0!important}
+.quiz-step{border:1.5px solid #5B5FB5!important;border-radius:2px!important;height:12px!important;background:#FFFFFF0d!important}
+.quiz-step.done{background:var(--nx-violet)!important;border-color:var(--nx-violet)!important}
+.quiz-step.current{background:var(--nx-orange)!important;border-color:var(--nx-orange)!important;box-shadow:0 0 10px #FF8A3D99}
+.quiz-number{color:var(--nx-cyan)!important;font-weight:700}
+.quiz-question{color:#FFFFFF!important;font-weight:700!important;text-wrap:pretty!important}
+.quiz-option{background:linear-gradient(180deg,var(--nx-glass-2),var(--nx-glass))!important;border:1.5px solid var(--nx-line)!important;box-shadow:0 8px 20px #00000055!important;color:var(--nx-text)!important;font-weight:600!important}
+.quiz-option:hover:not(:disabled){border-color:var(--nx-violet)!important;transform:none!important}
+.quiz-option:active:not(:disabled){transform:translateY(1px)!important}
+.quiz-option.selected{border-color:var(--nx-cyan)!important;background:linear-gradient(180deg,#17406A,#162A5C)!important;box-shadow:0 0 0 1px var(--nx-cyan),0 0 18px #43D9FF66!important}
+.quiz-letter{font-family:var(--nx-display);font-weight:700!important;background:#FFFFFF10!important;border:1.5px solid #6D71C8!important;border-radius:6px!important;color:var(--nx-text)!important}
+.quiz-option.selected .quiz-letter{background:var(--nx-cyan)!important;border-color:var(--nx-cyan)!important;color:#06243A!important}
+.quiz-back{background:#FFFFFF0a!important;border:1.5px solid var(--nx-line)!important;color:var(--nx-text)!important;box-shadow:none!important}
+.quiz-back:hover:not(:disabled){border-color:var(--nx-violet)!important;background:#FFFFFF14!important}
+.quiz-feedback.error{color:#FF8FA8!important}
+
+/* ---- reveal ---- */
+.shell .main{padding-top:34px}
+.shell .eyebrow{display:inline-block;margin-bottom:10px}
+.star-stage{margin-top:30px!important}
+.orbital{border-color:#5B54B8!important}
+.orbit-dot{background:var(--nx-orange)!important;box-shadow:0 0 8px var(--nx-orange)}
+.orbit-dot.second{background:var(--nx-cyan)!important;box-shadow:0 0 8px var(--nx-cyan)}
+.star-svg{filter:drop-shadow(0 0 18px #FFB34799)!important}
+.star-caption{color:var(--nx-text)!important;font-weight:700}
+.stage-message{color:var(--nx-text-soft)!important}
+.reveal-stage .subtitle{color:var(--nx-text-soft)!important}
+.reveal-stage .eyebrow{border-color:var(--company-neon)!important;box-shadow:0 0 12px color-mix(in srgb,var(--company-neon) 50%,transparent)}
+.reveal-title{color:var(--company-neon)!important;font-weight:700!important;text-shadow:0 0 22px color-mix(in srgb,var(--company-neon) 70%,transparent)}
+.company-label{color:var(--company-neon)!important}
+.room-wrap{width:min(100%,460px)!important;margin:14px auto 6px!important}
+.room-wrap:before{background:var(--company-neon)!important;opacity:.28}
+.description{color:var(--nx-text-soft)!important}
+.reveal-pill{font-family:var(--nx-body);letter-spacing:0!important;font-size:12px!important;background:#FFFFFF0d!important;color:var(--company-neon)!important;border:1.5px solid var(--company-neon)}
+.error-stage h1{color:#fff}
+.error-stage p{color:var(--nx-text-soft)!important}
+/* result cards on the night background */
+.company-activity{border:1.5px solid #FFFFFF33!important;box-shadow:0 14px 34px #00000066!important}
+.activity-ecommerce{box-shadow:inset 0 0 0 4px #F4C24B,0 14px 34px #00000066!important}
+.activity-steps li,.activity-num{border-color:#1E1B4B!important}
+.quiz-insight{background:linear-gradient(180deg,var(--nx-glass-2),var(--nx-glass))!important;border:1.5px solid var(--nx-line)!important;box-shadow:0 14px 34px #00000066!important;color:var(--nx-text)}
+.insight-eyebrow{color:var(--nx-orange-2)!important}
+.insight-title,.insight-block h3,.bar-value,.bar-label{color:var(--nx-text)!important}
+.insight-title span,.insight-bars li.mine .bar-label,.insight-bars li.mine .bar-value{color:var(--company-neon)!important}
+.bar-label small{color:var(--nx-text-soft)!important}
+.insight-block p,.insight-list{color:var(--nx-text-soft)!important}
+.insight-block{border-top-color:var(--nx-line)!important}
+.bar-track{background:var(--nx-deep)!important;border:1.5px solid #5B5FB5!important}
+.insight-note{background:#FFFFFF10!important;color:var(--nx-text)!important;border:1.5px solid var(--company-neon)}
+.insight-eyebrow,.activity-eyebrow{font-family:var(--nx-body)}
+.reveal-celebration .pixel{box-shadow:0 0 6px currentColor!important}
+.reveal-celebration .pixel:nth-child(3n){background:var(--nx-orange-2)!important}
+.reveal-celebration .pixel:nth-child(4n){background:var(--nx-pink)!important}
+.reveal-celebration .pixel:nth-child(5n){background:var(--nx-cyan)!important}
+
+/* ---- lobby (forwarding page) ---- */
+.offline-banner{color:#FFD6B0}
+
+/* ---- prototype-only panels stay neutral and readable ---- */
+.test-panel,.prototype-panel{font-family:var(--nx-body);color:#303632;color-scheme:light}
+
+@media(max-width:699px){
+  .site,.shell{padding-top:10px!important}
+  .nx-sky-anchor{--nx-skyline-h:96px}
+  .nx-moon{width:40px;height:40px;bottom:150px}
+  .site .main{padding-top:14px}
+  .site .eyebrow{font-size:12px!important}
+  .shell .main{padding-top:22px!important}
+  .nx-wordmark-name{font-size:17px}
+  .nx-wordmark-sub{font-size:10px}
+  .episode,.edition{font-size:11px!important;padding:4px 8px!important}
+  .brand-logo,.mark{width:34px!important;height:34px!important}
+  .join-inline{width:min(100%,360px)!important;margin-top:4px!important}
+  .name-input,.join-button{height:48px!important}
+}
+@media(max-width:360px){
+  .nx-wordmark-sub{display:none}
+  .episode,.edition{font-size:10px!important}
+}
+/* Short phones: keep the name box on the first screen. */
+@media(max-width:699px) and (max-height:700px){
+  .site .nx-sky-anchor{--nx-skyline-h:78px}
+  .site .subtitle{margin-top:10px;font-size:13px}
+  .site .scene-wrap{width:78%!important;margin-top:0!important}
+  .site .headline{font-size:28px!important}
+}
+@media(min-width:700px){.site .scene-wrap{max-width:560px}}
+@media(prefers-reduced-motion:reduce){.nx-beacon,.nx-float{animation:none}.nx-win{transition:none}}

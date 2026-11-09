@@ -49,6 +49,22 @@ Host can confirm **Next Round** after the server's four-second Reveal window end
 
 Run `node --test tests/database/m5-next-round.test.mjs` to check migration, history, stale requests, and start eligibility. Use `node tests/integration/m5-next-round-browser.mjs` for the isolated browser and API check. It uses embedded PostgreSQL and loopback only. Before staging sign-off, verify simultaneous rotation with separate PostgreSQL connections and repeat the QR and Reveal flow on mobile using the protected staging URL.
 
+## M6 Quiz assignment
+
+Players answer a five-question quiz and see their company as soon as they submit, without waiting for others: `/` Join → `/quiz` → `/reveal` (the original 4-second star reveal plays for each player). The company comes from the answers instead of a random draw, and the result page shows the score split, why the track fits, skills to practise and related CAMT majors. `/lobby` now only forwards old links.
+
+- Host sees each player's company live. The Host button is now **ปิดรอบ** (close round): it stops new joins and gives players who have not finished the least-filled companies. The round also closes by itself once all 15 seats have a result. Next Round works as before after closing.
+
+- After the reveal, a card shows the company's mini-game from the team's Canva decks (Tech: CODE อ่านกัน, Design: จับผิดภาพ, E-Com: Circus Pitching). Copy is in `companyActivities` in `src/lib/quiz.ts`; themes are in `src/styles/activity.css`.
+- Question and result copy: `src/lib/quiz.ts`. Every track lists CAMT's DII (Digital Industry Integration) as the related major (`camtMajors`).
+- Scoring and assignment rules (pure functions): `src/lib/quizScoring.ts`, tested by `npm run test:unit`. DEV → `tech`, DESIGN → `design`, BIZNET → `ecommerce`. A clear winner is never moved; a 2-2-1 tie uses question 5, then question 1, and goes to the tied company with fewer members at the moment that player submits (first come, first served). Players who did not finish the quiz fill the smallest companies. Company sizes may be unequal.
+- Option order is shuffled per player and stays the same on refresh. In-progress answers are kept in `localStorage` (`lw-quiz:<round>:<player>`).
+- Server mode: apply `supabase/migrations/202611090001_m6_quiz_assignment.sql` after M5, only on an authorized disposable test/staging database. It adds `m6_quiz_answers`, `m6_submit_quiz`, assigns the company inside `m6_submit_quiz`, turns `m5_start` into close round (same signature; Host close needs one reserved player, Auto closes only when all 15 seats have a result) and adds `quizAnswers` to the player's own state. Host state does not include answers. `npm run test:db` covers it on PGlite; `node tests/integration/m5-next-round-browser.mjs` runs the full server-mode flow including the quiz.
+
+## Nextopia theme
+
+Player pages (`/`, `/quiz`, `/reveal`, `/lobby`) follow the official CAMT NEXTopia Open House 2026 poster ("Design your future"): a night city with neon orange, violet and cyan light, chrome lettering and glowing glass room-cubes. A stepped night sky with a neon pixel skyline (`src/components/NextopiaSky.tsx`) sits on every player page, and its windows switch to the company colour when the result is revealed. The landing hero (`src/art/nextopia.tsx`) is a pixel-art version of the poster's stacked glass rooms, one per company. Styles are in `src/styles/nextopia.css`, loaded after each page's original sheet; the Host dashboard only gets colours and type from `src/styles/host-nextopia.css`. Fonts come from `next/font/google` in `src/app/layout.tsx` (Bai Jamjuree for headings, IBM Plex Sans Thai Looped for text, Silkscreen for pixel labels); the build downloads them, so it needs internet access. This replaces the approved prototypes' look, so `npm run test:visual` is expected to differ from the reference HTML, and the earlier LINE Seed Sans TH decision should be reviewed.
+
 ## Protected Vercel Preview
 
 Use a dedicated Vercel project with Vercel Authentication and Standard Protection enabled before the first Preview. Deploy the local checkout with the Vercel CLI to Preview. Use the generated deployment URL and keep system environment variables exposed so the app can validate that exact origin. Set `APP_ORIGIN` only for a separately approved fixed origin.

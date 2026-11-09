@@ -9,6 +9,7 @@ import { createRequire } from 'node:module';
 import { setTimeout as delay } from 'node:timers/promises';
 import { PGlite } from '@electric-sql/pglite';
 import { chromium, expect } from '@playwright/test';
+import { quizQuestions } from '../../src/lib/quiz.ts';
 
 const require = createRequire(import.meta.url);
 const db = new PGlite();
@@ -31,6 +32,16 @@ const rpcServer = createServer(async (req, res) => {
 });
 
 let app, browser, stage = 'database setup';
+/** Answer every question with one track; the result page opens right away. */
+const answerQuiz = async (page, track) => {
+ await page.waitForURL('**/quiz');
+ for (let i = 0; i < quizQuestions.length; i++) {
+  await expect(page.locator('.quiz-count')).toHaveText(`${i + 1}/5`);
+  await page.getByRole('radio', {name: quizQuestions[i].options.find(o => o.track === track).text}).click();
+ }
+ await page.getByRole('button', {name: 'ส่งคำตอบ'}).click();
+ await page.waitForURL('**/reveal');
+};
 const appPort = createServer();
 try {
  await db.exec('create role anon; create role authenticated; create role service_role;');
@@ -91,21 +102,19 @@ try {
  await expect(name).toBeFocused();
  await name.fill('W'.repeat(30));
  await expect(name).toHaveAttribute('aria-invalid', 'false');
- let allowHeartbeat;
- const heartbeat = new Promise(resolve => { allowHeartbeat = resolve });
- await player.route('**/api/v1/presence/heartbeat', async route => {
-  await heartbeat;
-  await route.continue();
- });
  await player.getByRole('button', {name: /Join/}).click();
- await player.waitForURL('**/lobby');
- try {
-  await expect(player.locator('.offline-banner')).toBeHidden();
-  await expect(player.locator('.you strong')).toHaveText('W'.repeat(30));
-  await checkWidth(player);
- } finally { allowHeartbeat(); }
- await expect(player.locator('.current')).toHaveText('1', {timeout: 10000});
- await expect(player.locator('.count')).toHaveAttribute('aria-atomic', 'true');
+ await player.waitForURL('**/quiz');
+ await checkWidth(player);
+ stage = 'instant result';
+ await answerQuiz(player, 'biznet');
+ await expect(player.locator('.reveal-stage')).toBeVisible({timeout: 15000});
+ await expect(player.getByRole('status')).toContainText('ยินดีต้อนรับเข้าสู่ E-Com');
+ await expect(player.getByRole('region', {name: /คุณเหมาะกับสาย BIZNET/})).toContainText('100%');
+ await expect(player.getByRole('region', {name: 'Circus Pitching'})).toContainText('Bingo!');
+ await expect(player.getByRole('img', {name: /ภาพห้องทำงาน Pixel Art/})).toBeVisible();
+ await checkWidth(player);
+
+ stage = 'Host live view and close round';
  await host.goto(origin + '/host');
  const passwordField = host.getByLabel('รหัสผ่าน Host');
  await expect(passwordField).toBeFocused();
@@ -115,26 +124,25 @@ try {
  await expect(passwordField).toBeFocused();
  await passwordField.fill(password);
  await passwordField.press('Enter');
- const startButton = host.getByRole('button', {name: /เริ่มเปิดเผยบริษัท/});
+ const closeButton = host.getByRole('button', {name: 'ปิดรอบ ✦'});
  const nextButton = host.getByRole('button', {name: 'Next Round'});
- await expect(startButton).toBeEnabled();
+ await expect(closeButton).toBeEnabled();
  await expect(host.getByRole('heading', {name: 'ภาพรวมกิจกรรม'})).toBeFocused();
  await checkWidth(host);
  await expect(nextButton).toBeDisabled();
+ await expect(host.locator('.roster')).toContainText('E-Com');
+ await expect(host.locator('.roster')).not.toContainText('BIZNET');
+ // The result page keeps a presence lease, so the Host sees the player online.
+ await expect(host.locator('.roster .presence')).toHaveText(/Online/, {timeout: 15000});
  const state = await (await host.request.get(origin + '/api/v1/host/session')).json();
  assert.equal((await host.request.post(resetPath, {headers, data: {
   roundId: state.roundId, confirmationToken: state.confirmationToken,
- }})).status(), 403, 'Start confirmation cannot be used to rotate');
- stage = 'first reveal';
- await startButton.click();
- await host.getByRole('button', {name: 'ยืนยันการเริ่ม'}).click();
- await player.waitForURL('**/reveal');
- await expect(nextButton).toBeDisabled();
- await expect(player.locator('.reveal-stage')).toBeVisible({timeout: 15000});
- await expect(player.getByRole('status')).toContainText(/ยินดีต้อนรับเข้าสู่ (Tech|Design|E-Com)/);
- await expect(player.getByRole('img', {name: /ภาพห้องทำงาน Pixel Art/})).toBeVisible();
- await checkWidth(player);
- await expect(nextButton).toBeEnabled({timeout: 10000});
+ }})).status(), 403, 'Close confirmation cannot be used to rotate');
+ await closeButton.click();
+ await host.getByRole('button', {name: 'ยืนยันปิดรอบ'}).click();
+ await expect(host.getByRole('button', {name: 'ปิดรอบแล้ว ✓'})).toBeDisabled({timeout: 10000});
+ await expect(player.getByRole('status')).toContainText('ยินดีต้อนรับเข้าสู่ E-Com');
+ await expect(nextButton).toBeEnabled({timeout: 20000});
 
  const finished = await (await host.request.get(origin + '/api/v1/host/session')).json();
  stage = 'Host rotation and old player redirect';
@@ -165,11 +173,12 @@ try {
  await newcomer.goto(origin);
  await newcomer.getByLabel('ก่อนเริ่มกิจกรรม บอกชื่อของคุณหน่อย!').fill('Second participant');
  await newcomer.getByRole('button', {name: /Join/}).click();
- await newcomer.waitForURL('**/lobby');
- await expect(newcomer.locator('.current')).toHaveText('1', {timeout: 10000});
+ await answerQuiz(newcomer, 'dev');
+ await expect(newcomer.getByRole('status')).toContainText('ยินดีต้อนรับเข้าสู่ Tech', {timeout: 15000});
  assert.equal((await db.query('select count(*)::integer as n from public.m3_session')).rows[0].n, 2);
- assert.equal((await db.query('select count(*)::integer as n from public.m4_assignments')).rows[0].n, 1);
- console.log('Next Round browser/API passed: auth, confirmation, Reveal, zero seats, polling redirect, idempotence, same QR and retained assignment.');
+ assert.equal((await db.query('select count(*)::integer as n from public.m4_assignments')).rows[0].n, 2, 'first-round result kept, newcomer placed instantly');
+ assert.equal((await db.query('select count(*)::integer as n from public.m6_quiz_answers')).rows[0].n, 2);
+ console.log('Server-mode flow passed: instant quiz result, Host live view and close, auth, confirmation, zero seats, polling redirect, idempotence, same QR and retained assignment.');
 } catch (error) {
  console.error('Next Round smoke failed during ' + stage + ': ' + error.message.split('\n')[0]);
  process.exitCode = 1;

@@ -1,32 +1,19 @@
 'use client';
-/* eslint-disable @next/next/no-location-assign-relative-destination -- Full navigation isolates approved page styles. */
+import { NextopiaSky } from '@/components/NextopiaSky';
 import { useEffect,useState } from 'react';
 import { LobbyArt0,LobbyArt1 } from '@/art/lobby';
-import { multiplayer,watchLobby,type Player,type PublicSession } from '@/services/multiplayer';
+import { multiplayer } from '@/services/multiplayer';
+/** Results are shown as soon as the quiz is done, so the lobby only forwards old links: result, quiz or Join. */
 export function ServerLobby(){
- const [player,setPlayer]=useState<Player|null>(null);const [state,setState]=useState<PublicSession|null>(null);
  const [connectionIssue,setConnectionIssue]=useState(false);
  useEffect(()=>{
   let active=true;
-  let stop:(()=>void)|undefined;
-  const goToJoin=()=>{sessionStorage.removeItem('lw-initial-reveal');window.location.replace('/')};
   multiplayer.bootstrap().then(({own})=>{
    if(!active)return;
-   if(!own){goToJoin();return}
-   if(own.phase==='committed'){sessionStorage.removeItem('lw-initial-reveal');window.location.assign('/reveal');return}
-   setPlayer(own);
-   stop=watchLobby(own.roundId,value=>{
-    if(!active)return;
-    setState(value);
-    setConnectionIssue(value===null);
-    if(value?.phase==='committed'&&value.revealStartAt){
-     sessionStorage.setItem('lw-initial-reveal',value.revealStartAt);
-     window.location.assign('/reveal');
-    }
-   },goToJoin);
+   sessionStorage.removeItem('lw-initial-reveal');
+   window.location.replace(!own?'/':own.companyId||own.phase==='committed'?'/reveal':'/quiz');
   }).catch(()=>{if(active)setConnectionIssue(true)});
-  return()=>{active=false;stop?.()};
+  return()=>{active=false};
  },[]);
- const count=state?.onlineCount;
- return <div className="shell"><header className="masthead"><div className="brand"><span className="mark" aria-hidden="true"><LobbyArt0/></span><span>A LITTLE WORLD<br/>OF COMPANIES</span></div><span className="edition">✦ WORKSHOP EDITION</span></header><main className="main"><div className="eyebrow"><span className="spark">✦</span> EVERYONE&apos;S GETTING READY <span className="spark">✦</span></div><h1 className="headline">รอเพื่อนอีกนิด!</h1><p className="subtitle">เมื่อทุกคนพร้อม เราจะเริ่มพร้อมกัน</p><div className="scene-wrap" role="img" aria-label="ภาพสำนักงานส่วนกลาง Pixel Art"><LobbyArt1/></div><div className={'offline-banner'+(connectionIssue?' active':'')} role="alert">การเชื่อมต่อขัดข้อง — ยังยืนยันจำนวนออนไลน์ล่าสุดไม่ได้</div><div className={'count-block'+(!state?' muted-data':'')}><span className="count-label">ผู้เล่นออนไลน์ตอนนี้</span><div className="count" aria-live="polite" aria-atomic="true"><span className="current">{count??'—'}</span><span className="total">/ 15</span></div><div className="count-caption">{count===undefined?'ไม่สามารถยืนยันจำนวนล่าสุด':`กำลังรออีก ${15-count} คน`}</div></div><div className="progress" role="progressbar" aria-label="จำนวนผู้เล่นออนไลน์" aria-valuemin={0} aria-valuemax={15} aria-valuenow={count}>{Array.from({length:15},(_,i)=><span key={i} className={'slot'+(count!==undefined&&i<count?' filled':'')} aria-hidden="true"/>)}</div><div className="you"><div><small>ชื่อผู้เล่นของคุณ</small><strong>{player?.displayName??'—'}</strong></div><span className="check">{state?'✓ เข้าร่วมแล้ว':'● ตรวจสอบการเชื่อมต่อ'}</span></div></main><footer className="footer"><span>✳ MADE FOR LITTLE ADVENTURES</span><span><b>WAITING LOBBY</b></span></footer></div>;
+ return <div className="shell"><header className="masthead"><div className="brand"><span className="mark" aria-hidden="true"><LobbyArt0/></span><span className="nx-wordmark"><span className="nx-wordmark-name">NEXTOPIA</span><small className="nx-wordmark-sub">A Little World of Companies</small></span></div><span className="edition">CAMT DII Open House</span></header><NextopiaSky variant="lobby"/><main className="main"><div className="eyebrow"><span className="spark">✦</span> EVERYONE&apos;S GETTING READY <span className="spark">✦</span></div><h1 className="headline">กำลังพาไปต่อ...</h1><div className="scene-wrap" role="img" aria-label="ภาพสำนักงานส่วนกลาง Pixel Art"><LobbyArt1/></div><div className={'offline-banner'+(connectionIssue?' active':'')} role="alert">การเชื่อมต่อขัดข้อง โปรดลองอีกครั้ง</div></main><footer className="footer"><span>✳ MADE FOR LITTLE ADVENTURES</span><span><b>WAITING LOBBY</b></span></footer></div>;
 }

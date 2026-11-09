@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { hash, hostConfirmation, isToken, token, validHostConfirmation, verifyPassword } from '@/server/auth';
 import { rpc } from '@/server/database';
 import { normalizeDisplayName } from '@/server/validation';
+import { isCompleteAnswers, scoreQuiz } from '@/lib/quizScoring';
 
 export const runtime = 'nodejs';
 const playerCookie='lw_player', hostCookie='lw_host';
@@ -85,8 +86,14 @@ export async function POST(req:NextRequest,ctx:Context){
   }
   const id=identity(req,playerCookie);if(!id)return error('PLAYER_REQUIRED',401);
   if(!await allowed(req))return error('RATE_LIMITED',429);
-  if(route==='join'||route==='presence/heartbeat'||route==='presence/disconnect'){
+  if(route==='join'||route==='quiz'||route==='presence/heartbeat'||route==='presence/disconnect'){
    if(typeof payload.roundId!=='string'||!uuid.test(payload.roundId))return error('ROUND_CHANGED',409);
+  }
+  if(route==='quiz'){
+   if(!isCompleteAnswers(payload.answers))return error('INVALID_INPUT',422);
+   // Score on the server; the client only sends which track each answer belongs to.
+   const {candidates}=scoreQuiz(payload.answers);
+   return response(await rpc('m6_submit_quiz',{p_round:payload.roundId,p_hash:id,p_answers:payload.answers,p_candidates:candidates}));
   }
   if(route==='join'){const name=normalizeDisplayName(payload.displayName);if(name===null)return error('INVALID_NAME',422);return response(await rpc('m5_join',{p_round:payload.roundId,p_hash:id,p_name:name}));}
   if(route==='presence/heartbeat'||route==='presence/disconnect'){

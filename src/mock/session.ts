@@ -1,5 +1,11 @@
-export type CompanyId = 'tech' | 'design' | 'ecommerce';
-export type Player = { id: string; name: string; online: boolean; company?: CompanyId };
+import { assignCompanies, emptyCounts, isCompleteAnswers, pickCompany, randomAnswers, scoreQuiz, type CompanyId, type Track } from '@/lib/quizScoring';
+import { clearAllQuizProgress } from '@/lib/quizProgress';
+export type { CompanyId };
+export type PlayerQuiz = { answers: Track[]; candidates: CompanyId[] };
+export type Player = { id: string; name: string; online: boolean; company?: CompanyId; quiz?: PlayerQuiz };
+function quizFor(answers: Track[]): PlayerQuiz { return { answers: [...answers], candidates: scoreQuiz(answers).candidates }; }
+function countsOf(players: Player[]) { const counts = emptyCounts(); for (const p of players) if (p.company) counts[p.company] += 1; return counts; }
+/** `started` means the Host closed the round: no new joins, every seat has a company. */
 export type Session = { players: Player[]; started: boolean };
 const KEY = 'little-world-m2-mock-v1';
 const EMPTY: Session = { players: [], started: false };
@@ -17,7 +23,7 @@ export const mockSession = {
   currentId() { return typeof window === 'undefined' ? null : sessionStorage.getItem('little-world-player'); },
   join(raw: string): string | null {
     const name = raw.trim().normalize('NFC');
-    if (!name || [...new Intl.Segmenter('th', { granularity: 'grapheme' }).segment(name)].length > 30 || /[\p{Cc}\u061c\u200e\u200f\u202a-\u202e\u2066-\u2069]/u.test(name)) return 'กรุณากรอกชื่อผู้เล่น 1–30 ตัวอักษร';
+    if (!name || [...new Intl.Segmenter('th', { granularity: 'grapheme' }).segment(name)].length > 30 || /[\p{Cc}؜‎‏‪-‮⁦-⁩]/u.test(name)) return 'กรุณากรอกชื่อผู้เล่น 1–30 ตัวอักษร';
     const id = this.currentId(); const existing = cached.players.find(p => p.id === id);
     if (existing) { this.presence(existing.id, true); return null; }
     if (cached.started) return 'กิจกรรมเริ่มแล้ว';
@@ -25,19 +31,36 @@ export const mockSession = {
     const player = { id: crypto.randomUUID(), name, online: true };
     sessionStorage.setItem('little-world-player', player.id);
     save({ ...cached, players: [...cached.players, player] });
-    this.autoStart(); return null;
+    return null;
   },
-  presence(id: string, online: boolean) { save({ ...cached, players: cached.players.map(p => p.id === id ? { ...p, online } : p) }); if (online) this.autoStart(); },
-  addDemo() { if (cached.started || cached.players.length >= 15) return; save({ ...cached, players: [...cached.players, { id: crypto.randomUUID(), name: `Player ${cached.players.length + 1}`, online: true }] }); this.autoStart(); },
-  autoStart() { if (!cached.started && cached.players.filter(p => p.online).length === 15) this.start(); },
+  presence(id: string, online: boolean) { save({ ...cached, players: cached.players.map(p => p.id === id ? { ...p, online } : p) }); },
+  /** The company is decided at submit time, from the answers and the current company sizes. */
+  submitQuiz(id: string, answers: unknown): string | null {
+    if (!isCompleteAnswers(answers)) return 'กรุณาตอบให้ครบ 5 ข้อ';
+    const own = cached.players.find(p => p.id === id);
+    if (!own) return 'ไม่พบผู้เล่น กรุณาเข้าร่วมใหม่';
+    if (own.company) return null; // Result already given; it never changes.
+    if (cached.started) return 'กิจกรรมเริ่มแล้ว';
+    const quiz = quizFor(answers);
+    const company = pickCompany(quiz.candidates, countsOf(cached.players));
+    save({ ...cached, players: cached.players.map(p => p.id === id ? { ...p, quiz, company } : p) });
+    this.autoClose(); return null;
+  },
+  addDemo() {
+    if (cached.started || cached.players.length >= 15) return;
+    const quiz = quizFor(randomAnswers());
+    save({ ...cached, players: [...cached.players, { id: crypto.randomUUID(), name: `Player ${cached.players.length + 1}`, online: true, quiz, company: pickCompany(quiz.candidates, countsOf(cached.players)) }] });
+    this.autoClose();
+  },
+  /** The round closes by itself once all 15 seats have a result. */
+  autoClose() { if (!cached.started && cached.players.length === 15 && cached.players.every(p => p.company)) this.start(); },
+  /** Host "close round": stop new joins and give players who have not finished the least-filled companies. */
   start() {
-    if (cached.started || !cached.players.some(p => p.online)) return false;
-    const companies: CompanyId[] = ['tech', 'design', 'ecommerce'];
-    const shuffled = [...cached.players];
-    for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; }
-    const offset = Math.floor(Math.random() * 3);
-    const assignment = new Map(shuffled.map((p, i) => [p.id, companies[(i + offset) % 3]]));
-    save({ started: true, players: cached.players.map(p => ({ ...p, company: assignment.get(p.id) })) }); return true;
+    if (cached.started || cached.players.length === 0) return false;
+    const waiting = cached.players.filter(p => !p.company).map(p => ({ id: p.id, candidates: p.quiz?.candidates }));
+    const assignment = assignCompanies(waiting, Math.random, countsOf(cached.players));
+    save({ started: true, players: cached.players.map(p => ({ ...p, company: p.company ?? assignment.get(p.id) })) }); return true;
   },
-  reset() { sessionStorage.removeItem('little-world-player'); save(EMPTY); },
+  isLoaded() { return initialized; },
+  reset() { sessionStorage.removeItem('little-world-player'); clearAllQuizProgress(); save(EMPTY); },
 };
