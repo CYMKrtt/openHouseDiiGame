@@ -1,0 +1,21 @@
+/* Host dashboard: Nextopia colours and type only; layout is unchanged. Loaded after host.css. */
+:root{--ivory:#F8F7FF;--ink:#1E1B4B;--muted:#4B4880;--border:#D9D5F5;--coral:#FF8A3D;--star:#FFD84D;--shadow:0 10px 30px #1E1B4B0d}
+body{font-family:var(--nx-font-body),"IBM Plex Sans Thai Looped","Noto Sans Thai",Tahoma,sans-serif}
+body:before{background:linear-gradient(90deg,#FF8A3D 0 34%,#A78BFF 34% 67%,#43D9FF 67%)}
+button:focus-visible,input:focus-visible{outline-color:#E8458B}
+h1,h2,.metric b{font-family:var(--nx-font-display),"Bai Jamjuree","Noto Sans Thai",Tahoma,sans-serif}
+.mark{background:linear-gradient(180deg,#FFFFFF,#C9CFE8);box-shadow:0 0 0 2px #7B5CFF}
+.host-pill{border:2px solid #1E1B4B;background:#fff;color:#1E1B4B;letter-spacing:.04em}
+.eyebrow{color:#4B4880}
+.state,.metric,.panel{border-color:#D9D5F5}
+.panel-head,.roster td,.divider{border-color:#ECEAFB}
+.divider{background:#ECEAFB}
+.roster th{background:#F6F5FF;color:#4B4880}
+.index{color:#8F8CB8}
+.presence{color:#13795B}
+.state i,.presence i{background:#2BC4E8}
+.startbtn,.confirm{background:linear-gradient(180deg,#FFB347,#FF8A3D);border:2px solid #1E1B4B;color:#1A0E05;box-shadow:3px 3px 0 #1E1B4B}
+.notice{background:#F6F5FF;border-color:#ECEAFB;color:#4B4880}
+.status-copy{color:#1E1B4B}
+.overlay{background:#1E1B4BA6}
+.dialog input{border-color:#C9C5EC}

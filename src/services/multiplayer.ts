@@ -1,8 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 
+import type { Track } from '@/lib/quizScoring';
 export type CompanyId='tech'|'design'|'ecommerce';
 export type PublicSession = {roundId:string;phase:'waiting'|'committed'; onlineCount:number; capacity:number; revision:number; serverTime:string;revealStartAt:string|null};
-export type Player = {roundId:string;playerId:string;displayName:string;phase:'waiting'|'committed';companyId:CompanyId|null;revealStartAt:string|null;serverTime:string};
+export type Player = {roundId:string;playerId:string;displayName:string;phase:'waiting'|'committed';companyId:CompanyId|null;revealStartAt:string|null;serverTime:string;quizAnswers?:Track[]|null};
 export type HostSession = PublicSession & {reservedCount:number;confirmationToken:string;canNextRound:boolean;nextRoundToken:string|null;players:Array<{id:string;displayName:string;isOnline:boolean;companyId:CompanyId|null}>};
 export class ServiceError extends Error { constructor(public code:string,public status:number){super(code)} }
 async function request<T>(path:string, body?:object, keepalive=false):Promise<T>{
@@ -13,6 +14,7 @@ export const multiplayer = {
  bootstrap:()=>request<{own:Player|null;state:PublicSession}>('bootstrap'),
  join:(roundId:string,displayName:string)=>request<Player>('join',{roundId,displayName}),
  me:()=>request<Player>('me'),
+ submitQuiz:(roundId:string,answers:Track[])=>request<Player>('quiz',{roundId,answers}),
  session:()=>request<PublicSession>('session'),
  hostLogin:(password:string)=>request<{ok:boolean}>('host/login',{password}),
  hostLogout:()=>request<{ok:boolean}>('host/logout',{}),

@@ -1,0 +1,36 @@
+/* Post-reveal mini-game card. Each theme follows that company's Canva deck; the page palette is unchanged. */
+.company-activity{display:none;position:relative;isolation:isolate;overflow:hidden;width:min(100%,460px);margin:24px auto 0;padding:20px 18px 22px;text-align:center;border:2px solid #212820;border-radius:18px;box-shadow:4px 4px 0 #212820;color:#fff}
+.done .company-activity{display:block;animation:rise .45s .15s both}
+.fail .company-activity{display:none}
+.activity-deco{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.activity-deco:before,.activity-deco:after{content:"";position:absolute;width:6px;height:6px;image-rendering:pixelated}
+.activity-eyebrow{margin:0;font-size:12px;font-weight:850;letter-spacing:.02em;opacity:.95}
+.activity-title{margin:4px 0 2px;font-size:28px;line-height:1.35;font-weight:900;letter-spacing:-.02em}
+.activity-tagline{margin:0 0 14px;font-size:14px;font-weight:700;line-height:1.6}
+.activity-steps{list-style:none;margin:0 auto;padding:0;display:grid;gap:9px;max-width:330px;text-align:left}
+.activity-steps li{display:flex;align-items:center;gap:11px;padding:9px 12px;border:2px solid #212820;border-radius:12px;background:#fff;color:#303632;font-size:15px;font-weight:750;line-height:1.5}
+.activity-num{flex:0 0 30px;height:30px;display:grid;place-items:center;border:2px solid #212820;border-radius:8px;font-size:15px;font-weight:900;color:#212820}
+
+/* Tech: "CODE อ่านกัน" night-sky pixel deck. */
+.activity-tech{background:linear-gradient(180deg,#2B1E4F 0%,#4B3A8C 100%)}
+.activity-tech .activity-title{color:#FFE27A;text-shadow:3px 3px 0 #1A1233}
+.activity-tech .activity-num{background:#F5C84C}
+.activity-tech .activity-deco:before{top:16px;left:22px;background:#fff;box-shadow:58px 26px 0 #CFC4FF,350px 8px 0 #fff,390px 60px 0 #FFE27A,300px 120px 0 #CFC4FF,28px 140px 0 #FFE27A,410px 180px 0 #fff,12px 220px 0 #CFC4FF}
+.activity-tech .activity-deco:after{width:4px;height:4px;top:44px;left:120px;background:#fff;box-shadow:160px -20px 0 #fff,240px 30px 0 #CFC4FF,-80px 110px 0 #fff,260px 200px 0 #fff}
+
+/* Design: "จับผิดภาพ" bright-sky platformer deck. */
+.activity-design{background:linear-gradient(180deg,#8FD3F4 0%,#D6F1FF 78%,#3DA35D 78%,#3DA35D 84%,#B8733A 84%);color:#1F2B24}
+.activity-design .activity-title{color:#C2410C;text-shadow:2px 2px 0 #fff}
+.activity-design .activity-eyebrow,.activity-design .activity-tagline{color:#1F3A4D}
+.activity-design .activity-num{background:#E8A33D}
+.activity-design .activity-deco:before{width:28px;height:12px;top:22px;left:18px;border-radius:2px;background:#fff;box-shadow:12px -8px 0 #fff,24px 0 0 #fff,330px 30px 0 #fff,342px 22px 0 #fff,354px 30px 0 #fff}
+.activity-design .activity-deco:after{width:22px;height:9px;top:96px;right:20px;border-radius:2px;background:#fff;box-shadow:9px -6px 0 #fff,18px 0 0 #fff}
+
+/* E-Com: "Circus Pitching" red-and-gold deck. */
+.activity-ecommerce{background:repeating-linear-gradient(90deg,#B81E2D 0 26px,#A0182A 26px 52px);border-color:#212820;box-shadow:inset 0 0 0 4px #F4C24B,4px 4px 0 #212820}
+.activity-ecommerce .activity-title{color:#FFD45A;text-shadow:3px 3px 0 #5E0B15}
+.activity-ecommerce .activity-num{background:#F4C24B}
+.activity-ecommerce .activity-deco:before{width:8px;height:8px;top:18px;left:20px;background:#FFD45A;box-shadow:380px 6px 0 #FFD45A,18px 150px 0 #FFE9A8,392px 170px 0 #FFE9A8}
+.activity-ecommerce .activity-deco:after{width:5px;height:5px;top:60px;left:44px;background:#FFE9A8;box-shadow:330px -30px 0 #FFD45A,350px 80px 0 #FFD45A}
+
+@media(max-width:370px){.company-activity{padding:16px 14px 18px}.activity-title{font-size:24px}.activity-steps li{font-size:14px}}
